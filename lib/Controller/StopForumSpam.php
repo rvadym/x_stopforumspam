@@ -10,11 +10,11 @@ class Controller_StopForumSpam extends \AbstractController{
         parent::init();
 
         // add add-on locations to pathfinder
-        $l = $this->api->locate('addons',__NAMESPACE__,'location');
+        /*$l = $this->api->locate('addons',__NAMESPACE__,'location');
         $addon_location = $this->api->locate('addons',__NAMESPACE__);
         $this->api->pathfinder->addLocation($addon_location,array(
             'php'=>'lib'
-        ))->setParent($l);
+        ))->setParent($l);*/
     }
 
     function checkIP($ip){
@@ -27,9 +27,8 @@ class Controller_StopForumSpam extends \AbstractController{
     }
 
     function checkEmail($email){
-        $xml = simplexml_load_string($this->getResponse("http://stopforumspam.com/api?email=".$email));
-//        return $xml->frequency->__toString();
-        if($xml->frequency->__toString() != '0'){
+        $obj = json_decode($this->getResponse("http://stopforumspam.com/api?email=".$email."&f=json"));
+        if($obj->email->frequency != 0){
             return true;
         }else{
             return false;
@@ -37,9 +36,8 @@ class Controller_StopForumSpam extends \AbstractController{
     }
 
     function checkUserName($userName){
-        $xml = simplexml_load_string($this->getResponse("http://stopforumspam.com/api?username=".$userName));
-//        return $xml->frequency->__toString();
-        if($xml->frequency->__toString() != '0'){
+        $obj = json_decode($this->getResponse("http://stopforumspam.com/api?username=".$userName."&f=json"));
+        if($obj->username->frequency != 0){
             return true;
         }else{
             return false;
